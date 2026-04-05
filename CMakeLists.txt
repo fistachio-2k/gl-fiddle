@@ -31,6 +31,6 @@ glad_add_library(
     LOADER API gl:core=3.3 # Specifies OpenGL core profile version 4.3
 )
 
-add_executable(gl-fiddle src/main.cpp)
+add_executable(gl-fiddle src/main.cpp src/Shader.h)
 
 target_link_libraries(gl-fiddle PRIVATE glfw glad_gl_core_33)
