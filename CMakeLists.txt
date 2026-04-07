@@ -31,6 +31,14 @@ glad_add_library(
     LOADER API gl:core=3.3 # Specifies OpenGL core profile version 4.3
 )
 
-add_executable(gl-fiddle src/main.cpp src/Shader.h)
+source_group("Shaders" FILES shaders/shader.vert shaders/shader.frag)
+add_executable(gl-fiddle src/main.cpp src/Shader.h shaders/shader.vert shaders/shader.frag)
 
 target_link_libraries(gl-fiddle PRIVATE glfw glad_gl_core_33)
+
+add_custom_command(TARGET gl-fiddle POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+        "$<TARGET_FILE_DIR:gl-fiddle>/shaders"
+    COMMENT "Copying shaders to output directory"
+)
