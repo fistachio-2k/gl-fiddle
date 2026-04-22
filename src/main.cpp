@@ -5,8 +5,10 @@
 #include "Shader.h"
 
 constexpr std::string_view vertexShaderPath = "../shaders/shader.vert";
-
 constexpr std::string_view fragmentShaderPath = "../shaders/shader.frag";
+
+constexpr unsigned int SCR_WIDTH = 800;
+constexpr unsigned int SCR_HIEGHT = 600;
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -48,7 +50,7 @@ int main()
 		return -1;
 	}
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, SCR_WIDTH, SCR_HIEGHT);
 
 	///////////////////////////////////////////////////////////////
 	//////                Shader Compilation                ///////
