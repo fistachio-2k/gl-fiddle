@@ -33,9 +33,10 @@ glad_add_library(
 set_target_properties(glad_gl_core_33 PROPERTIES FOLDER "deps")
 
 # --- STB Image ---
+message(STATUS "STB Image: Downloading stb_image.h...")
 set(STB_DIR "${CMAKE_CURRENT_BINARY_DIR}/_deps/stb-src")
 set(STB_IMAGE_HEADER "${STB_DIR}/stb_image.h")
-file(DOWNLOAD "https://raw.githubusercontent.com/nothings/stb/master/stb_image.h" "${STB_IMAGE_HEADER}" SHOW_PROGRESS)
+file(DOWNLOAD "https://raw.githubusercontent.com/nothings/stb/master/stb_image.h" "${STB_IMAGE_HEADER}")
 
 # Generate stb_image.cpp dynamically in the build directory
 set(STB_IMAGE_CPP "${STB_DIR}/stb_image.cpp")
