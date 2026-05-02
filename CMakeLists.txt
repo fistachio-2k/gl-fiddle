@@ -11,7 +11,7 @@ include(dependencies.cmake)
 
 source_group("Shaders" FILES shaders/shader.vert shaders/shader.frag)
 source_group("CMake" FILES dependencies.cmake)
-add_executable(gl-fiddle src/main.cpp src/Shader.h shaders/shader.vert shaders/shader.frag dependencies.cmake)
+add_executable(gl-fiddle src/main.cpp src/Shader.h src/Texture.h shaders/shader.vert shaders/shader.frag dependencies.cmake)
 
 target_link_libraries(gl-fiddle PRIVATE glfw glad_gl_core_33 stb glm)
 

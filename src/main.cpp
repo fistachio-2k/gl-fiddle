@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.h"
-#include "stb_image.h"
+#include "Texture.h"
 
 constexpr std::string_view vertexShaderPath = "../shaders/shader.vert";
 constexpr std::string_view fragmentShaderPath = "../shaders/shader.frag";
@@ -58,7 +58,7 @@ int main()
 	//////                Shader Compilation                ///////
 	///////////////////////////////////////////////////////////////
 
-	auto ShaderProgram = Shader(vertexShaderPath.data(), fragmentShaderPath.data());
+	auto shaderProgram = Shader(vertexShaderPath.data(), fragmentShaderPath.data());
 
 	///////////////////////////////////////////////////////////////
 	//////            VAO+VBO+EBO Initialization            ///////
@@ -110,29 +110,7 @@ int main()
 	//////                Generate Texture                  ///////
 	///////////////////////////////////////////////////////////////
 	
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load(texturePath.data(), &width, &height, &nrChannels, 0);
-	
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "ERROR::TEXTURES::FAILED_TO_LOAD" << std::endl;
-	}
-
-	stbi_image_free(data);
+	Texture texture = Texture(texturePath);
 
 	///////////////////////////////////////////////////////////////
 	//////                   Render Loop                    ///////
@@ -146,9 +124,8 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		ShaderProgram.use();
+		texture.bind();
+		shaderProgram.use();
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
