@@ -7,7 +7,8 @@
 
 constexpr std::string_view vertexShaderPath = "../shaders/shader.vert";
 constexpr std::string_view fragmentShaderPath = "../shaders/shader.frag";
-constexpr std::string_view texturePath = "../assets/container.jpg";
+constexpr std::string_view texturePath0 = "../assets/container.jpg";
+constexpr std::string_view texturePath1 = "../assets/awesomeface.png";
 
 constexpr unsigned int SCR_WIDTH = 800;
 constexpr unsigned int SCR_HIEGHT = 600;
@@ -110,7 +111,13 @@ int main()
 	//////                Generate Texture                  ///////
 	///////////////////////////////////////////////////////////////
 	
-	Texture texture = Texture(texturePath);
+	Texture texture0 = Texture(texturePath0, GL_RGB);
+	Texture texture1 = Texture(texturePath1, GL_RGBA);
+
+	shaderProgram.use();
+
+	shaderProgram.setInt("ourTexture0", 0);
+	shaderProgram.setInt("ourTexture1", 1);
 
 	///////////////////////////////////////////////////////////////
 	//////                   Render Loop                    ///////
@@ -124,7 +131,12 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		texture.bind();
+		glActiveTexture(GL_TEXTURE0);
+		texture0.bind();
+
+		glActiveTexture(GL_TEXTURE1);
+		texture1.bind();
+
 		shaderProgram.use();
 
 		glBindVertexArray(VAO);
