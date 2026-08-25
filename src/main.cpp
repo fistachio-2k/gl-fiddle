@@ -133,16 +133,21 @@ float vertices[] = {
     shaderProgram.setFloat("mixCof", mixCof);
 
     ///////////////////////////////////////////////////////////////
-    //////                   Render Loop                    ///////
+    //////                     Misc.                        ///////
     ///////////////////////////////////////////////////////////////
 
+    glEnable(GL_DEPTH_TEST);  
+
+    ///////////////////////////////////////////////////////////////
+    //////                   Render Loop                    ///////
+    ///////////////////////////////////////////////////////////////
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
         // rendering commands here
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         texture0.bind();
