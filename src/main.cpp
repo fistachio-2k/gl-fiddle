@@ -20,12 +20,6 @@ constexpr unsigned int SCR_HIEGHT = 600;
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) { glViewport(0, 0, width, height); }
 
-static void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
 int main()
 {
     ///////////////////////////////////////////////////////////////
@@ -151,11 +145,44 @@ float vertices[] = {
     glEnable(GL_DEPTH_TEST);  
 
     ///////////////////////////////////////////////////////////////
+    //////                 Camera Control                   ///////
+    ///////////////////////////////////////////////////////////////
+
+    
+    float deltaTime = 0.0f; 
+    float lastFrame = 0.0f;
+
+    auto cameraPos = glm::vec3(0.f, 0.f, 3.f);
+    auto cameraUp = glm::vec3(0.f, 1.f, 0.f);
+    auto cameraFront = glm::vec3(0.f, 0.f, -1.f);
+
+
+    auto processInput = [&cameraPos, &cameraUp, &cameraFront, &deltaTime, window]()
+    {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        float cameraSpeed = 5.f * deltaTime; // adjust accordingly
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            cameraPos += cameraSpeed * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            cameraPos -= cameraSpeed * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    };
+
+    ///////////////////////////////////////////////////////////////
     //////                   Render Loop                    ///////
     ///////////////////////////////////////////////////////////////
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window);
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;  
+
+        processInput();
 
         // rendering commands here
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -173,8 +200,7 @@ float vertices[] = {
         //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
         //glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // note that we're translating the scene in the reverse direction of where we want to move
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / SCR_HIEGHT, 0.1f,100.0f);
 
