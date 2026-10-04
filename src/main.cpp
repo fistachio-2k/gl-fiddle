@@ -157,7 +157,7 @@ float vertices[] = {
     auto cameraFront = glm::vec3(0.f, 0.f, -1.f);
 
 
-    auto processInput = [&cameraPos, &cameraUp, &cameraFront, &deltaTime, window]()
+    auto processInput = [&cameraPos, &cameraUp, &cameraFront, &deltaTime](GLFWwindow* window)
     {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
@@ -178,11 +178,11 @@ float vertices[] = {
     ///////////////////////////////////////////////////////////////
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;  
 
-        processInput();
+        processInput(window);
 
         // rendering commands here
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
