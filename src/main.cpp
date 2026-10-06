@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 
 #include <glad/gl.h>
@@ -180,6 +181,42 @@ int main()
     }
   };
 
+  // GLFW Mouse Input Settings
+  static float lastX = 400;
+  static float lastY = 300;
+  static float yaw = 0;
+  static float pitch = 0;
+
+  auto mouse_callback = [](GLFWwindow* window, double xpos, double ypos)
+  {
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top and GLFW origin is top left
+    lastX = xpos;
+    lastY = ypos;
+
+    constexpr float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    pitch = std::min(pitch, 89.0f);
+    pitch = std::max(pitch, -89.0f);
+  };
+
+  auto update_camera_front = [&cameraFront]()
+  {
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+  };
+
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetCursorPosCallback(window, mouse_callback);
+
   ///////////////////////////////////////////////////////////////
   //////                   Render Loop                    ///////
   ///////////////////////////////////////////////////////////////
@@ -206,6 +243,8 @@ int main()
     glBindVertexArray(VAO);
     //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
     //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    update_camera_front();
 
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
