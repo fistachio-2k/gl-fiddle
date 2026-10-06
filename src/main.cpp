@@ -151,9 +151,9 @@ int main()
   float deltaTime = 0.0f;
   float lastFrame = 0.0f;
 
-  auto cameraPos = glm::vec3(0.f, 0.f, 3.f);
-  auto cameraUp = glm::vec3(0.f, 1.f, 0.f);
-  auto cameraFront = glm::vec3(0.f, 0.f, -1.f);
+  glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+  glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
   auto processInput = [&cameraPos, &cameraUp, &cameraFront, &deltaTime](GLFWwindow* window)
   {
@@ -184,11 +184,19 @@ int main()
   // GLFW Mouse Input Settings
   static float lastX = 400;
   static float lastY = 300;
-  static float yaw = 0;
+  static float yaw = -90;
   static float pitch = 0;
+  static bool firstMouse = true;
 
   auto mouse_callback = [](GLFWwindow* window, double xpos, double ypos)
   {
+    if (firstMouse)
+    {
+      lastX = xpos;
+      lastY = ypos;
+      firstMouse = false;
+    }
+
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top and GLFW origin is top left
     lastX = xpos;
