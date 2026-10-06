@@ -186,6 +186,7 @@ int main()
   static float lastY = 300;
   static float yaw = -90;
   static float pitch = 0;
+  static float fov = 45;
   static bool firstMouse = true;
 
   auto mouse_callback = [](GLFWwindow* window, double xpos, double ypos)
@@ -222,8 +223,16 @@ int main()
     cameraFront = glm::normalize(direction);
   };
 
+  auto scroll_callback = [](GLFWwindow* window, double xoffset, double yoffset)
+  {
+    fov -= static_cast<float>(yoffset);
+    fov = std::max(fov, 1.0f);
+    fov = std::min(fov, 45.0f);
+  };
+
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
 
   ///////////////////////////////////////////////////////////////
   //////                   Render Loop                    ///////
@@ -256,7 +265,7 @@ int main()
 
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / SCR_HIEGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(SCR_WIDTH) / SCR_HIEGHT, 0.1f, 100.0f);
 
     shaderProgram.setMat4("view", view);
     shaderProgram.setMat4("projection", projection);
